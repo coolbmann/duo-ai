@@ -26,6 +26,7 @@
     "express": "^5.2.1",
     "lodash": "^4.18.1",
     "routing-controllers": "^0.11.3",
+    "socket.io": "^4.8.3",
     "ts-node": "^10.9.2"
   }
 }
