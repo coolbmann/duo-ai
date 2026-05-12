@@ -173,11 +173,11 @@ export function ChatPage() {
 
   return (
     <div
-      className="grid h-full bg-bg-app"
-      style={{ gridTemplateColumns: "1fr 320px" }}
+      className="grid h-svh bg-bg-app"
+      style={{ gridTemplateColumns: "1fr 320px", gridTemplateRows: "1fr" }}
     >
       {/* Main chat area */}
-      <div className="flex flex-col overflow-hidden border-r border-border-light">
+      <div className="flex flex-col min-h-0 border-r border-border-light">
         {/* Topbar */}
         <div
           className="flex items-center justify-between bg-bg-card border-b border-border-light shrink-0"
@@ -381,12 +381,12 @@ export function ChatPage() {
 
       {/* Right rail */}
       <aside
-        className="bg-bg-card flex flex-col overflow-y-auto gap-4"
+        className="bg-bg-card flex flex-col overflow-y-auto gap-4 min-h-0"
         style={{ padding: "18px 18px 24px" }}
       >
         <RailFeed lines={feed} />
         <RailWorkflow stage={stage} />
-        <RailMemory />
+        {/* <RailMemory /> */}
       </aside>
     </div>
   );
