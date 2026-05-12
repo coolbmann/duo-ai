@@ -71,8 +71,11 @@ export const classify = task("classify", async (messages: BaseMessage[]) => {
     },
   ];
 
-  const venueList = venues
-    .map((v) => `- ${v.venueName} (${v.suburb}, lat: ${v.lat}, lng: ${v.lng})`)
+  const venueList = Object.values(BookingSystemVenueMap)
+    .map(
+      (v) =>
+        `- ${v.id}: ${v.venueName} (${v.suburb}, lat: ${v.lat}, lng: ${v.lng})`,
+    )
     .join("\n");
 
   const systemPrompt = `Today's date is ${datePreamble}. For all date requests, convert to AEST or AEDT timezone.
@@ -88,17 +91,17 @@ export const classify = task("classify", async (messages: BaseMessage[]) => {
     - Return between 1 and 3 results, ordered by relevance/proximity
     - Never return more than 3 results, the less the better
     - The date should be in YYYYMMDD format
-    - The location should be the venueName from the venue list above
+    - The location should be the venue id from the venue list above
 
     CRITICAL - MISSING INFORMATION RULES:
     - If location is missing: you MUST ask the user for their preferred location. Do NOT proceed.
     - If date is missing: you MUST ask the user for their preferred date. Do NOT proceed.
-    - Only when BOTH location AND date are present for every slot should you confirm and proceed.
+    - Only when BOTH location AND date are present for every slot should you proceed.
     - If any slot has a null location or null date, the aiResponse MUST ask for the missing information.
 
     aiResponse rules:
     - If any information is missing: ask ONLY for the missing field(s). Do not confirm anything.
-    - If all information is present: confirm the location(s) and date(s) and say you will proceed to find availability.
+    - If all information is present: there is no need to confirm the inputs, just tell the user the location and dates for which you will find availability.
     - Never say you will find courts if any slot has a null field.
     `;
 

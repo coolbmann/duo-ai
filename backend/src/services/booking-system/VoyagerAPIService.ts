@@ -37,7 +37,7 @@ export class VoyagerAPIService {
     date: string, // YYYYMMDD format,
     apiVersion: string = "v4",
   ): Promise<string> {
-    const url = `${this.baseUrl}/booking/${BookingSystemVenueMap[venueName].venueName}/fetch-booking-data?view=${apiVersion}&date=${date}`;
+    const url = `${this.baseUrl}/booking/${BookingSystemVenueMap[venueName].id}/fetch-booking-data?view=${apiVersion}&date=${date}`;
 
     const response = await axios.get(url);
     return response.data;
@@ -71,23 +71,35 @@ export class VoyagerAPIService {
             const date = dayjs(params.get("d"), "YYYYMMDD").format(
               "YYYY-MM-DD",
             );
+            const rawDate = params.get("d") ?? "";
             const time = dayjs(params.get("t"), "HHmm").format("HH:mm");
+            const rawTime = params.get("t") ?? "";
             const venue = params.get("v") ?? "";
+            const courtId = params.get("id") ?? "";
 
             slots.push({
+              id: null,
+              rawDate,
+              rawTime,
               date,
               time,
               venue,
               court: courtName,
+              courtId,
               bookingSystem: BookingSystem.VOYAGER,
-              // available: true,
-              // booking_url: href,
+              booking_url: href,
             });
           }
         });
     });
 
     return slots;
+  }
+
+  public generateBookingUrl(timeslot: CourtAvailabilitySlot) {
+    const { venue, rawDate, rawTime, courtId } = timeslot;
+
+    return `${this.baseUrl}/booking/request?v=${venue}&id=${courtId}&d=${rawDate}&t=${rawTime}`;
   }
 }
 

@@ -12,50 +12,12 @@ import {
   MemorySaver,
 } from "@langchain/langgraph";
 import { classify } from "../tasks/classify";
+import { CourtAvailabilityService } from "../../services/booking-system/CourtAvailabilityService";
+import { summariseAvailabilities } from "../tasks/summariseAvailabilities";
 
 const checkpointer = new MemorySaver();
 
-// export const courtAvailabilityAgent = entrypoint(
-//   { name: "courtAvailability", checkpointer },
-//   async (message: BaseMessage[], config: LangGraphRunnableConfig) => {
-//     const previous =
-//       (await courtAvailabilityAgent.getState(config))?.values?.messages ?? [];
-
-//     console.log("previous: ", previous);
-
-//     const messages = [...previous, ...message];
-
-//     console.log("messages: ", messages);
-//     // Step 1: Classify Intent
-//     // Determine which court availability agent to call, based on location and time
-//     const availabilityParams = await classify(messages);
-
-//     console.log(
-//       "final: ",
-//       entrypoint.final({
-//         value: availabilityParams, // what gets returned to the caller
-//         save: {
-//           messages: [...messages, new AIMessage(availabilityParams.aiResponse)],
-//         },
-//       }),
-//     );
-
-//     return entrypoint.final({
-//       value: availabilityParams, // what gets returned to the caller
-//       save: {
-//         messages: [...messages, new AIMessage(availabilityParams.aiResponse)],
-//       },
-//     });
-//     // console.log("availabilityParams: ", availabilityParams);
-//     // If there is not enough information, repeat step while chaining prompt context
-//     // Step 2: Call API and normalise data
-//     // Clean and strip unnecessary data before passing to AI
-//     // Step 3: Pass prompt to AI and ask for summary of availabilities
-//     // Return object shape for top 4 results
-//     // Also return summary of other availabilities or lack thereof
-//     return availabilityParams;
-//   },
-// );
+const courtAvailabilityService = new CourtAvailabilityService();
 
 export const courtAvailabilityAgent = entrypoint(
   { name: "courtAvailability", checkpointer },
@@ -79,18 +41,57 @@ export const courtAvailabilityAgent = entrypoint(
 
     console.log("response:", JSON.stringify(response, null, 2));
 
-    console.log("isComplete: ", isComplete(response));
+    console.log(
+      "isLocationAndDateIntentFound: ",
+      isLocationAndDateIntentFound(response),
+    );
+
+    // Step 2: Call API and normalise data
+    if (isLocationAndDateIntentFound(response)) {
+      const availabilities =
+        await courtAvailabilityService.getCourtAvailabilities(response.slots);
+
+      const availabilitiesResponse = await summariseAvailabilities(
+        messages,
+        availabilities.minimised,
+      );
+
+      // Step 3: Generate booking details
+      if (availabilitiesResponse.selectedCourtTimeslotId) {
+        const bookingDetails =
+          await courtAvailabilityService.generateBookingDetails(
+            availabilitiesResponse.selectedCourtTimeslotId,
+            availabilities.raw,
+          );
+
+        const response = `The timeslot for ${bookingDetails.court} at ${bookingDetails.time} is available. Here is your booking URL: ${bookingDetails.bookingUrl}`;
+
+        return entrypoint.final({
+          value: {
+            aiResponse: response,
+          },
+          save: addMessages(messages, [new AIMessage(response)]),
+        });
+      }
+
+      return entrypoint.final({
+        value: availabilitiesResponse,
+        save: addMessages(messages, [
+          new AIMessage(availabilitiesResponse.aiResponse),
+        ]),
+      });
+    }
 
     return entrypoint.final({
       value: response,
-      save: isComplete(response)
+      save: isLocationAndDateIntentFound(response)
         ? []
         : addMessages(messages, [new AIMessage(response.aiResponse)]),
     });
   },
 );
 
-const isComplete = (intent: {
+const isLocationAndDateIntentFound = (intent: {
   slots: { location?: string; date?: string }[];
 }): boolean => {
   return (
