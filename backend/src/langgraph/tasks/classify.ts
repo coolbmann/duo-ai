@@ -85,15 +85,19 @@ export const classify = task("classify", async (messages: BaseMessage[]) => {
     Available venues:
     ${venueList}
 
-    When the user mentions a suburb or area, pick the closest venue(s) by coordinates.
 
     Rules:
-    - Return between 1 and 3 results, ordered by relevance/proximity
+    - Return between 0 and 3 results, ordered by relevance/proximity
     - Never return more than 3 results, the less the better
     - The date should be in YYYYMMDD format
     - The location should be the venue id from the venue list above
 
-    CRITICAL - MISSING INFORMATION RULES:
+    PROXIMITY RULE - THIS OVERRIDES ALL OTHER RULES:
+    - Calculate the distance between the user's mentioned location and every venue.
+    - If NO venue is within 10km: you MUST return an empty slots array and set aiResponse to explain there are no venues nearby, then list the available venues with their suburbs.
+    - If at least one venue is within 10km: proceed normally.
+
+    CRITICAL - MISSING INFORMATION RULES:  
     - If location is missing: you MUST ask the user for their preferred location. Do NOT proceed.
     - If date is missing: you MUST ask the user for their preferred date. Do NOT proceed.
     - Only when BOTH location AND date are present for every slot should you proceed.
@@ -103,6 +107,9 @@ export const classify = task("classify", async (messages: BaseMessage[]) => {
     - If any information is missing: ask ONLY for the missing field(s). Do not confirm anything.
     - If all information is present: there is no need to confirm the inputs, just tell the user the location and dates for which you will find availability.
     - Never say you will find courts if any slot has a null field.
+
+    Formatting Rules:
+    - Always use markdown formatting in the aiResponse. Do not use HTML tags.
     `;
 
   const result = await intentModel.invoke([

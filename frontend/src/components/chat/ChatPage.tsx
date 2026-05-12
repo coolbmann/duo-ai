@@ -1,10 +1,9 @@
-import { useState, useRef, useEffect, useCallback } from "react";
-import { COURTS, FEED_SCRIPT, type FeedLine } from "@/data";
-import { CourtCard } from "./CourtCard";
-import { BoardingPass } from "./BoardingPass";
-import { ConfirmedCard } from "./ConfirmedCard";
+import { useState, useRef, useEffect } from "react";
+import { type FeedLine } from "@/data";
 import { RailFeed, RailWorkflow, RailMemory } from "./ChatRail";
 import { useChatSocket } from "@/hooks/useChatSocketHook";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 type Stage =
   | "idle"
@@ -49,6 +48,38 @@ function useTypewriter(text: string, speed = 16, run = true) {
   return out;
 }
 
+function AgentTyping() {
+  return (
+    <div
+      className="self-start border-l-2 border-brand"
+      style={{ padding: "2px 0 2px 14px", maxWidth: "85%" }}
+    >
+      <div
+        className="text-[11px] font-medium text-brand mb-1.5 flex items-center gap-1.5 uppercase tracking-[0.06em]"
+        style={{ fontFamily: "var(--font-sans)" }}
+      >
+        <span>COORDINATOR AGENT</span>
+        <span className="text-border-mid">·</span>
+        <span className="text-text-light font-normal normal-case tracking-normal">
+          just now
+        </span>
+      </div>
+      <span className="text-[14px] text-text-dark leading-6 flex items-center gap-0.5">
+        Agent is working
+        <span className="inline-flex gap-[3px] ml-1">
+          {[0, 1, 2].map((i) => (
+            <span
+              key={i}
+              className="w-[3px] h-[3px] rounded-full bg-text-dark animate-bounce"
+              style={{ animationDelay: `${i * 0.15}s` }}
+            />
+          ))}
+        </span>
+      </span>
+    </div>
+  );
+}
+
 function StreamingMessage({
   text,
   agent = "COORDINATOR AGENT",
@@ -58,7 +89,7 @@ function StreamingMessage({
   agent?: string;
   done: boolean;
 }) {
-  const out = useTypewriter(text, 16, !done);
+  const out = useTypewriter(text, 10, !done);
   const isTyping = !done && out.length < text.length;
   return (
     <div
@@ -75,11 +106,38 @@ function StreamingMessage({
           just now
         </span>
       </div>
-      <span
-        className={`text-[14px] text-text-dark leading-snug ${isTyping ? "cursor-blink" : ""}`}
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        components={{
+          p: ({ children }) => (
+            <p
+              className={`text-[14px] text-text-dark leading-6 m-0 [&+p]:mt-2 ${isTyping ? "cursor-blink" : ""}`}
+            >
+              {children}
+            </p>
+          ),
+          a: ({ href, children }) => (
+            <a
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-brand underline underline-offset-2 hover:opacity-75 transition-opacity"
+            >
+              {children}
+            </a>
+          ),
+          ul: ({ children }) => (
+            <ul className="list-disc pl-4 my-2 space-y-1">{children}</ul>
+          ),
+          li: ({ children }) => (
+            <li className="text-[14px] text-text-dark leading-snug">
+              {children}
+            </li>
+          ),
+        }}
       >
         {done ? text : out}
-      </span>
+      </ReactMarkdown>
     </div>
   );
 }
@@ -88,13 +146,6 @@ export function ChatPage() {
   const [stage, setStage] = useState<Stage>("idle");
   const [feed, setFeed] = useState<FeedLine[]>([]);
   const [input, setInput] = useState("");
-  const [selectedCourt, setSelectedCourt] = useState<string | null>(null);
-  const [courtLocked, setCourtLocked] = useState(false);
-  const [draft, setDraft] = useState(
-    "We're on for Saturday at 10am — Redfern PC. I've held the court for 90 mins. Tap the link to chip in $6 each. See you on the green.",
-  );
-  const [showConfetti, setShowConfetti] = useState(false);
-  const [bookingSent, setBookingSent] = useState(false);
   const chatRef = useRef<HTMLDivElement>(null);
 
   const { chatMessages, sendMessage } = useChatSocket("123");
@@ -274,6 +325,9 @@ export function ChatPage() {
               // }
               return null;
             })}
+            {chatMessages[chatMessages.length - 1]?.kind === "user" && (
+              <AgentTyping />
+            )}
           </div>
         )}
 

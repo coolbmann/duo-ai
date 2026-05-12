@@ -14,6 +14,7 @@ import {
 import { classify } from "../tasks/classify";
 import { CourtAvailabilityService } from "../../services/booking-system/CourtAvailabilityService";
 import { summariseAvailabilities } from "../tasks/summariseAvailabilities";
+import { BookingSystemVenueMap } from "../../utils/enums";
 
 const checkpointer = new MemorySaver();
 
@@ -64,7 +65,7 @@ export const courtAvailabilityAgent = entrypoint(
             availabilities.raw,
           );
 
-        const response = `The timeslot for ${bookingDetails.court} at ${bookingDetails.time} is available. Here is your booking URL: ${bookingDetails.bookingUrl}`;
+        const response = `The timeslot for ${bookingDetails.court} at ${bookingDetails.time} is available. \n\nHere is your booking URL: [${BookingSystemVenueMap[bookingDetails.venue]?.venueName} (${bookingDetails.court})](${bookingDetails.bookingUrl})`;
 
         return entrypoint.final({
           value: {
@@ -84,9 +85,7 @@ export const courtAvailabilityAgent = entrypoint(
 
     return entrypoint.final({
       value: response,
-      save: isLocationAndDateIntentFound(response)
-        ? []
-        : addMessages(messages, [new AIMessage(response.aiResponse)]),
+      save: addMessages(messages, [new AIMessage(response.aiResponse)]),
     });
   },
 );

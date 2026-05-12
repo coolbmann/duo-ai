@@ -4,7 +4,7 @@ import {
 } from "../services/booking-system/CourtAvailabilityService";
 import { JsonController, Body, Post } from "routing-controllers";
 import { courtAvailabilityAgent } from "../langgraph/entrypoints/courtAvailabilityAgent";
-import { BaseMessage } from "@langchain/core/messages";
+import { BaseMessage, HumanMessage } from "@langchain/core/messages";
 
 @JsonController("/court-availability")
 export class CourtAvailabilityController {
@@ -25,10 +25,11 @@ export class CourtAvailabilityController {
 
   @Post("/langgraph")
   public async getCourtAvailabilitiesLanggraph(
-    @Body() messages: BaseMessage[],
+    @Body() body: { message: string },
   ): Promise<any> {
     const config = { configurable: { thread_id: "7" } };
+    const baseMessage = new HumanMessage(body.message);
 
-    return await courtAvailabilityAgent.invoke(messages, config);
+    return await courtAvailabilityAgent.invoke([baseMessage], config);
   }
 }

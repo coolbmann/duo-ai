@@ -13,24 +13,24 @@ export function useChatSocket(chatId: string) {
       chatSocket.emit("join_room", { chatId });
     });
 
-    chatSocket.on("message_received", ({ text }) => {
+    chatSocket.on("server_message", ({ text }) => {
       setChatMessages((prev) => [
         ...prev,
-        { kind: "agent", text, agent: "COORDINATOR AGENT" },
+        { kind: "agent", text, agent: "COURT BOOKING AGENT" },
       ]);
     });
 
     return () => {
       chatSocket.emit("leave_room", { chatId });
       chatSocket.off("connect");
-      chatSocket.off("message_received");
+      chatSocket.off("server_message");
       chatSocket.disconnect();
     };
   }, [chatId]);
 
   const sendMessage = (text: string) => {
     if (!text.trim()) return;
-    setChatMessages((prev) => [...prev, { kind: "user", text }]); // ← append user msg here
+    setChatMessages((prev) => [...prev, { kind: "user", text }]);
     chatSocket.emit("send_message", { chatId, text });
   };
 

@@ -53,6 +53,7 @@ export class CourtAvailabilityService {
     date: string;
     time: string;
     court: string;
+    venue: string;
   }> {
     const selectedCourtAvailabilitySlot = rawCourtAvailabilitySlots.find(
       (slot) => slot.id === selectedCourtTimeslotId,
@@ -73,6 +74,7 @@ export class CourtAvailabilityService {
           date: selectedCourtAvailabilitySlot.date,
           time: selectedCourtAvailabilitySlot.time,
           court: selectedCourtAvailabilitySlot.court,
+          venue: selectedCourtAvailabilitySlot.venue,
         };
       default:
         return null;

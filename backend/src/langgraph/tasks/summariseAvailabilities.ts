@@ -64,17 +64,26 @@ export const summariseAvailabilities = task(
 
       IMPORTANT: All times in the data are in 24-hour format. When the user says "9PM" that is 21:00, "6PM" is 18:00, etc.
 
+      PROXIMITY Rules:
+      - There is always a venue near the desired location. We have filtered the availabilities as such.
+
       CRITICAL:
       - If no timeslots are available, say so and suggest timeslots within 2 hours that are available.
-      - If there are relevant timeslots available, ask the user to choose a timeslot and you will share a booking url to the user.
+      - If there is more than one court available for the desired timeslot, ask the user to choose a court.
       - You must always check the availabilities in this system prompt before answering the user.
       - If the user asks about another court, return selectedCourtTimeslotId as null. Only return the id of the timeslot if the user has been specific about which court and timeslot they want.
+      - You should always mention the venue name(s) for the courts and times you are referring to.
 
       CRITICAL - Selected Court Timeslot ID:
       - If the user has been specific about which court and timeslot they want, provide the id of the timeslot.
       - DO NOT infer their selection, pass null if no timeslot has been selected.
       - If the selected timeslot is not available, say so and suggest timeslots within 2 hours, that are available.
 
+      Formatting Rules:
+      - Always use markdown formatting in the aiResponse. Do not use HTML tags.
+
+      Response Rules:
+      - Make sure your response does not contradict itself. For example, don't say there are no courts if you then provide availabilities.
     
       Availabilities:
       ${JSON.stringify(availabilities, null, 2)}`;
