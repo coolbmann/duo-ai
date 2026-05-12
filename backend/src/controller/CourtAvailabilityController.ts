@@ -1,11 +1,15 @@
-import { CourtAvailabilityService } from "../services/booking-system/CourtAvailabilityService";
-import { JsonController } from "routing-controllers";
-import { Get, Body, Post } from "routing-controllers";
-import { AvailabilityAPIParams } from "../services/booking-system/CourtAvailabilityService";
+import {
+  CourtAvailabilityService,
+  AvailabilityAPIParams,
+} from "../services/booking-system/CourtAvailabilityService";
+import { JsonController, Body, Post } from "routing-controllers";
+import { courtAvailabilityAgent } from "../langgraph/entrypoints/courtAvailabilityAgent";
+import { BaseMessage } from "@langchain/core/messages";
 
 @JsonController("/court-availability")
 export class CourtAvailabilityController {
   private courtAvailabilityService: CourtAvailabilityService;
+
   constructor() {
     this.courtAvailabilityService = new CourtAvailabilityService();
   }
@@ -17,5 +21,14 @@ export class CourtAvailabilityController {
     return await this.courtAvailabilityService.getCourtAvailabilities(
       availabilityAPIParams,
     );
+  }
+
+  @Post("/langgraph")
+  public async getCourtAvailabilitiesLanggraph(
+    @Body() messages: BaseMessage[],
+  ): Promise<any> {
+    const config = { configurable: { thread_id: "7" } };
+
+    return await courtAvailabilityAgent.invoke(messages, config);
   }
 }

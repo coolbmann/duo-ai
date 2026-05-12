@@ -4,7 +4,6 @@ import {
   BookingSystemValue,
   BookingSystemVenueMap,
 } from "../../utils/enums";
-import { pick } from "lodash";
 
 export class CourtAvailabilityService {
   private voyagerAPIService: VoyagerAPIService;
@@ -16,9 +15,7 @@ export class CourtAvailabilityService {
 
   public async getCourtAvailabilities(
     availabilityAPIParams: AvailabilityAPIParams[],
-  ): Promise<
-    Pick<CourtAvailabilitySlot, "date" | "time" | "venue" | "court">[] | []
-  > {
+  ): Promise<MinimisedAvailabilityGroup[]> {
     const result = await Promise.all(
       availabilityAPIParams.map(async (param) => {
         console.log("param: ", param);
@@ -39,10 +36,24 @@ export class CourtAvailabilityService {
 
   private minimiseCourtAvailabilityResultForAI(
     availabilitySlots: CourtAvailabilitySlot[],
-  ): Pick<CourtAvailabilitySlot, "date" | "time" | "venue" | "court">[] {
-    return availabilitySlots.map((slot) => {
-      return pick(slot, ["date", "time", "venue", "court", "bookingSystem"]);
-    });
+  ): MinimisedAvailabilityGroup[] {
+    const groupMap = new Map<string, MinimisedAvailabilityGroup>();
+    let idCounter = 1;
+
+    for (const slot of availabilitySlots) {
+      const key = `${slot.date}|${slot.venue}|${slot.bookingSystem}`;
+      if (!groupMap.has(key)) {
+        groupMap.set(key, {
+          date: slot.date,
+          venue: slot.venue,
+          bookingSystem: slot.bookingSystem,
+          slots: [],
+        });
+      }
+      groupMap.get(key)!.slots.push({ id: idCounter++, time: slot.time, court: slot.court });
+    }
+
+    return Array.from(groupMap.values());
   }
 }
 
@@ -54,6 +65,13 @@ export type CourtAvailabilitySlot = {
   bookingSystem: BookingSystemValue;
   available?: boolean;
   booking_url?: string;
+};
+
+export type MinimisedAvailabilityGroup = {
+  date: string;
+  venue: string;
+  bookingSystem: BookingSystemValue;
+  slots: { id: number; time: string; court: string }[];
 };
 
 export interface AvailabilityAPIParams {
