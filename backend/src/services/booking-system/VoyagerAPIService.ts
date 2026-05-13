@@ -4,13 +4,18 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 import axios from "axios";
 import type { CourtAvailabilitySlot } from "./CourtAvailabilityService";
 import { BookingSystem, BookingSystemVenueMap } from "../../utils/enums";
+import {
+  BookingSystemService,
+  AvailabilitySearchParams,
+} from "./BookingSystemService";
 
 dayjs.extend(customParseFormat);
 
-export class VoyagerAPIService {
+export class VoyagerAPIService extends BookingSystemService {
   private baseUrl: string;
 
   constructor(baseUrl: string) {
+    super();
     this.baseUrl = baseUrl;
     //https://www.tennisvenues.com.au
   }
@@ -19,7 +24,7 @@ export class VoyagerAPIService {
     venueName,
     date,
     apiVersion,
-  }: AvailabilitySearchParamsType): Promise<CourtAvailabilitySlot[]> {
+  }: AvailabilitySearchParams): Promise<CourtAvailabilitySlot[]> {
     console.log("getCourtAvailabilities: ", venueName);
     console.log("date: ", date);
     console.log("apiVersion: ", apiVersion);
@@ -43,7 +48,9 @@ export class VoyagerAPIService {
     return response.data;
   }
 
-  private normalizeCourtAvailability(availabilityHtml: string) {
+  private normalizeCourtAvailability(
+    availabilityHtml: string,
+  ): CourtAvailabilitySlot[] {
     const $ = cheerio.load(availabilityHtml);
     const slots: CourtAvailabilitySlot[] = [];
 
@@ -101,10 +108,4 @@ export class VoyagerAPIService {
 
     return `${this.baseUrl}/booking/request?v=${venue}&id=${courtId}&d=${rawDate}&t=${rawTime}`;
   }
-}
-
-interface AvailabilitySearchParamsType {
-  venueName: keyof typeof BookingSystemVenueMap;
-  date: string;
-  apiVersion?: string;
 }

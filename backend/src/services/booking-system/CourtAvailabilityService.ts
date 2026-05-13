@@ -1,16 +1,19 @@
 import { VoyagerAPIService } from "./VoyagerAPIService";
+import { type BookingSystemService } from "./BookingSystemService";
 import {
-  BookingSystem,
   BookingSystemValue,
   BookingSystemVenueMap,
 } from "../../utils/enums";
 
 export class CourtAvailabilityService {
-  private voyagerAPIService: VoyagerAPIService;
+  private services: Record<BookingSystemValue, BookingSystemService>;
+
   constructor() {
-    this.voyagerAPIService = new VoyagerAPIService(
-      "https://www.tennisvenues.com.au",
-    );
+    this.services = {
+      voyager: new VoyagerAPIService("https://www.tennisvenues.com.au"),
+      playtomic: null,
+      playbypoint: null,
+    };
   }
 
   public async getCourtAvailabilities(
@@ -22,15 +25,13 @@ export class CourtAvailabilityService {
     const result = await Promise.all(
       availabilityAPIParams.map(async (param) => {
         console.log("param: ", param);
-        switch (BookingSystemVenueMap[param.location].bookingSystem) {
-          case BookingSystem.VOYAGER:
-            return this.voyagerAPIService.getCourtAvailabilities({
-              venueName: param.location,
-              date: param.date,
-            });
-          default:
-            return [];
-        }
+        const { bookingSystem } = BookingSystemVenueMap[param.location];
+        const service = this.services[bookingSystem];
+        if (!service) return [];
+        return service.getCourtAvailabilities({
+          venueName: param.location,
+          date: param.date,
+        });
       }),
     );
 
@@ -64,21 +65,17 @@ export class CourtAvailabilityService {
     }
 
     const { bookingSystem } = selectedCourtAvailabilitySlot;
+    const service = this.services[bookingSystem];
 
-    switch (bookingSystem) {
-      case BookingSystem.VOYAGER:
-        return {
-          bookingUrl: this.voyagerAPIService.generateBookingUrl(
-            selectedCourtAvailabilitySlot,
-          ),
-          date: selectedCourtAvailabilitySlot.date,
-          time: selectedCourtAvailabilitySlot.time,
-          court: selectedCourtAvailabilitySlot.court,
-          venue: selectedCourtAvailabilitySlot.venue,
-        };
-      default:
-        return null;
-    }
+    if (!service) return null;
+
+    return {
+      bookingUrl: service.generateBookingUrl(selectedCourtAvailabilitySlot),
+      date: selectedCourtAvailabilitySlot.date,
+      time: selectedCourtAvailabilitySlot.time,
+      court: selectedCourtAvailabilitySlot.court,
+      venue: selectedCourtAvailabilitySlot.venue,
+    };
   }
 
   private minimiseCourtAvailabilityResultForAI(
