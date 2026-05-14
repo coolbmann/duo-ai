@@ -22,7 +22,7 @@ export class ChatService {
 
   sendMessage(chatId: string, text: string) {
     console.log("server_message", chatId, text);
-    this.chat.to(chatId).emit("server_message", { text });
+    this.chat.to(chatId).emit("server_message", { chatId, text });
   }
 
   public async handleMessage(chatId: string, text: string) {

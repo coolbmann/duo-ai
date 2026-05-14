@@ -23,27 +23,33 @@ export function useChatSocket(chatId: string) {
   }, [chatId]);
 
   useEffect(() => {
-    // Restore any cached messages when returning to the same chatId
     setChatMessages(getMessages(chatId));
 
     chatSocket.connect();
 
-    chatSocket.on("connect", () => {
+    const handleConnect = () => {
       chatSocket.emit("join_room", { chatId });
-    });
+    };
 
-    chatSocket.on("server_message", ({ text }) => {
+    if (chatSocket.connected) {
+      chatSocket.emit("join_room", { chatId });
+    }
+
+    const handleServerMessage = ({ chatId: incomingChatId, text }: { chatId: string; text: string }) => {
+      if (incomingChatId !== chatId) return;
       update((prev) => [
         ...prev,
         { kind: "agent", text, agent: "COURT BOOKING AGENT" },
       ]);
-    });
+    };
+
+    chatSocket.on("connect", handleConnect);
+    chatSocket.on("server_message", handleServerMessage);
 
     return () => {
       chatSocket.emit("leave_room", { chatId });
-      chatSocket.off("connect");
-      chatSocket.off("server_message");
-      chatSocket.disconnect();
+      chatSocket.off("connect", handleConnect);
+      chatSocket.off("server_message", handleServerMessage);
     };
   }, [chatId, update]);
 

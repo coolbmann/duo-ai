@@ -8,7 +8,10 @@ export function registerChatSocket(io: Server) {
   ChatService.init(chat);
 
   chat.on("connection", (socket) => {
+    socket.data.chatIds = new Set<string>();
+
     socket.on("join_room", ({ chatId }) => {
+      socket.data.chatIds.add(chatId);
       socket.join(chatId);
     });
 
@@ -17,12 +20,11 @@ export function registerChatSocket(io: Server) {
     });
 
     socket.on("leave_room", ({ chatId }) => {
-      clearAgentMemory(chatId);
       socket.leave(chatId);
     });
 
     socket.on("disconnecting", () => {
-      socket.rooms.forEach((chatId) => clearAgentMemory(chatId));
+      socket.data.chatIds.forEach((chatId: string) => clearAgentMemory(chatId));
     });
   });
 }
