@@ -8,6 +8,7 @@ import { AgentController } from "./controller/AgentController";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import { registerSockets } from "./socket";
+import { FeedbackController } from "./controller/FeedbackController";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -15,7 +16,11 @@ const PORT = process.env.PORT || 3000;
 app.use(cors({ origin: "http://localhost:5174" }));
 
 useExpressServer(app, {
-  controllers: [CourtAvailabilityController, AgentController],
+  controllers: [
+    CourtAvailabilityController,
+    AgentController,
+    FeedbackController,
+  ],
 });
 
 const httpServer = createServer(app);
