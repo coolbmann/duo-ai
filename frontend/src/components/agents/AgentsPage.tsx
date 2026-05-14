@@ -1,11 +1,12 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AGENTS } from "@/data";
 import { AgentCard } from "./AgentCard";
-import { Button } from "@/components/ui/button";
 import { PlusIcon, SearchIcon } from "lucide-react";
 
 export function AgentsPage() {
   const navigate = useNavigate();
+  const [query, setQuery] = useState("");
 
   const handleOpen = (id: string) => {
     if (id === "court-booking") {
@@ -17,14 +18,14 @@ export function AgentsPage() {
 
   return (
     <div className="h-full overflow-y-auto bg-bg-app">
-      <div className="w-full" style={{ padding: "36px 44px 80px" }}>
+      <div className="pt-10 px-14">
         <div className="mb-7">
           <h1 className="text-[26px] font-semibold tracking-tight text-text-dark m-0 mb-1.5">
             Agents
           </h1>
           <p className="text-[14px] text-text-mid m-0">
-            Specialised agents that handle one job exceptionally well. Compose
-            them into workflows or call them directly from chat.
+            Specialised agents that handle one job exceptionally well. Call them
+            directly from chat.
           </p>
         </div>
 
@@ -35,6 +36,8 @@ export function AgentsPage() {
             <input
               className="flex-1 border-none outline-none bg-transparent text-[13px]"
               placeholder="Search agents..."
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
             />
           </div>
         </div>
@@ -46,8 +49,16 @@ export function AgentsPage() {
             gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
           }}
         >
-          {AGENTS.map((a) => (
-            <AgentCard key={a.id} {...a} onClick={() => handleOpen(a.id)} />
+          {AGENTS.filter((a) =>
+            a.name.toLowerCase().includes(query.toLowerCase()),
+          ).map((a) => (
+            <AgentCard
+              key={a.id}
+              {...a}
+              comingSoon={["dupr-analysis"].includes(a.id)}
+              inactive={a.id === "dupr-analysis"}
+              onClick={() => handleOpen(a.id)}
+            />
           ))}
         </div>
       </div>

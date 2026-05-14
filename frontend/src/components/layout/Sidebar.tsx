@@ -35,16 +35,16 @@ const NAV_SECTIONS: { section: string; items: NavItem[] }[] = [
     items: [{ to: "/agents", label: "All Agents", icon: "agents" }],
   },
   {
-    section: "Automation",
-    items: [{ to: "/workflows", label: "Workflows", icon: "workflow" }],
-  },
-  {
     section: "Chat",
     items: [
-      { to: "/chat", label: "New session", icon: "chat", pill: "LIVE" },
+      { to: "/chat", label: "Current session", icon: "chat", pill: "LIVE" },
       { to: "/sessions", label: "All Sessions", icon: "list" },
     ],
   },
+  // {
+  //   section: "Automation",
+  //   items: [{ to: "/workflows", label: "Workflows", icon: "workflow" }],
+  // },
 ];
 
 export function AppSidebar() {
@@ -64,22 +64,20 @@ export function AppSidebar() {
           }}
         >
           <span
-            className="inline-flex items-center justify-center text-sb-bg"
+            className="inline-flex items-center justify-center shrink-0 border border-[#98D121] w- h-7 rounded-sm p-[2px]"
             style={{
-              width: 22,
-              height: 22,
-              borderRadius: 6,
-              background: "linear-gradient(135deg, #B5F23D, #2DD4BF)",
-              fontFamily: "var(--font-display)",
-              fontSize: 14,
-              letterSpacing: 0,
+              borderRadius: 7,
             }}
           >
-            D
+            <img
+              src="/duo-logo (1).svg"
+              alt="Duo logo"
+              style={{ width: "100%", height: "100%" }}
+            />
           </span>
           <span>DUO</span>
         </div>
-        <SidebarTrigger className="text-sidebar-foreground/40 hover:text-sidebar-foreground hover:bg-sidebar-accent" />
+        {/* <SidebarTrigger className="text-sidebar-foreground/40 hover:text-sidebar-foreground hover:bg-sidebar-accent" /> */}
       </SidebarHeader>
 
       <SidebarContent>
@@ -126,16 +124,20 @@ export function AppSidebar() {
               </SidebarMenu>
             </SidebarGroupContent>
             {sec.section === "Chat" && (
-              <div className="px-2 mt-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-full gap-2 border-dashed border-sidebar-border bg-transparent text-sidebar-foreground/50 hover:bg-sidebar-accent hover:text-sidebar-foreground hover:border-sidebar-border"
+              <div className="my-2 bg-sidebar-accent rounded-sm">
+                <div
+                  // variant="outline"
+                  // size="sm"
+                  className="flex gap-2 items-center text-sidebar-foreground/50 hover:text-sidebar-foreground hover:cursor-pointer  text-sm px-2 py-2"
                   onClick={() => navigate("/chat")}
                 >
-                  <Plus size={13} strokeWidth={2.2} />
+                  <Plus
+                    className="transition-transform duration-150 group-hover:scale-125"
+                    size={13}
+                    strokeWidth={2.2}
+                  />
                   New chat
-                </Button>
+                </div>
               </div>
             )}
           </SidebarGroup>
@@ -153,15 +155,13 @@ export function AppSidebar() {
               fontSize: 12,
             }}
           >
-            JS
+            PA
           </div>
           <div>
             <div style={{ fontSize: 13, color: "#E8E8E6", fontWeight: 500 }}>
-              Jamie Singh
+              Shared Public Account
             </div>
-            <div style={{ fontSize: 11, color: "#6B6C70" }}>
-              Redfern Crew · Free
-            </div>
+            <div style={{ fontSize: 11, color: "#6B6C70" }}>Made by BH</div>
           </div>
         </div>
       </SidebarFooter>

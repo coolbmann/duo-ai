@@ -4,6 +4,7 @@ import { RailFeed, RailWorkflow, RailMemory } from "./ChatRail";
 import { useChatSocket } from "@/hooks/useChatSocketHook";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { MessageSquareIcon } from "lucide-react";
 
 type Stage =
   | "idle"
@@ -174,7 +175,7 @@ export function ChatPage() {
   return (
     <div
       className="grid h-svh bg-bg-app"
-      style={{ gridTemplateColumns: "1fr 320px", gridTemplateRows: "1fr" }}
+      style={{ gridTemplateColumns: "1fr", gridTemplateRows: "1fr" }}
     >
       {/* Main chat area */}
       <div className="flex flex-col min-h-0 border-r border-border-light">
@@ -184,25 +185,13 @@ export function ChatPage() {
           style={{ padding: "14px 24px", height: 60 }}
         >
           <div className="flex items-center gap-2.5 font-semibold text-[14px]">
-            <svg
-              width={18}
-              height={18}
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z" />
-            </svg>
-            <span>New session</span>
-            <span className="text-[13px] text-text-light font-normal">
-              · Pickleball booking
-            </span>
+            <MessageSquareIcon className="w-4 h-4" />
+            <span>Current session</span>
           </div>
           <div className="flex items-center gap-2 text-[12px] text-text-mid">
             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 border border-border-light rounded-full text-[11px] bg-bg-card">
-              <span className="w-1.5 h-1.5 rounded-full bg-accent-success" />5
-              agents online
+              <span className="w-1.5 h-1.5 rounded-full bg-accent-success" />1
+              agent available
             </span>
           </div>
         </div>
@@ -217,35 +206,31 @@ export function ChatPage() {
               Where + when do you want to{" "}
               <span className="text-brand">play?</span>
             </div>
-            <div className="text-[14px] text-text-mid max-w-[380px] text-center leading-relaxed mb-[22px]">
-              Tell me, and I'll find a court, line up your crew, and split the
-              bill.
+            <div className="text-[14px] text-text-mid max-w-xl text-center leading-relaxed mb-[22px]">
+              Give me a location and a time, and I'll find you courts to play
+              on.
             </div>
             <div className="flex flex-wrap gap-2 justify-center">
-              <button
+              <div
+                onClick={() => sendMessage("Find me courts at Willoughby")}
+                className="text-[12px] text-white bg-text-dark border border-border-light rounded-full px-3.5 py-1.5 transition-all font-medium hover:-translate-y-0.5 hover:shadow-sm hover:cursor-pointer"
+              >
+                Find me courts at Willoughby
+              </div>
+              <div
                 onClick={() =>
-                  runDemo("Book my usual Saturday morning game with the crew")
+                  sendMessage("What locations do you have access to?")
                 }
-                className="text-[12px] text-text-mid bg-bg-card border border-border-light rounded-full px-3.5 py-1.5 transition-all font-medium hover:border-text-dark hover:text-text-dark"
+                className="text-[12px] text-white bg-text-dark border border-border-light rounded-full px-3.5 py-1.5 transition-all font-medium hover:-translate-y-0.5 hover:shadow-sm hover:cursor-pointer"
               >
-                Book my usual game
-              </button>
-              <button
-                onClick={() =>
-                  runDemo(
-                    "Find a court Saturday around 10am near Redfern, 4 players",
-                  )
-                }
-                className="text-[12px] text-text-mid bg-bg-card border border-border-light rounded-full px-3.5 py-1.5 transition-all font-medium hover:border-text-dark hover:text-text-dark"
+                What locations do you have access to?
+              </div>
+              <div
+                onClick={() => sendMessage("Book me courts tomorrow at 6PM")}
+                className="text-[12px] text-white bg-text-dark border border-border-light rounded-full px-3.5 py-1.5 transition-all font-medium hover:-translate-y-0.5 hover:shadow-sm hover:cursor-pointer"
               >
-                Saturday 10am, Redfern
-              </button>
-              <button
-                onClick={() => runDemo("I'm free this weekend — surprise me")}
-                className="text-[12px] text-text-mid bg-bg-card border border-border-light rounded-full px-3.5 py-1.5 transition-all font-medium hover:border-text-dark hover:text-text-dark"
-              >
-                Surprise me
-              </button>
+                Book me courts tomorrow at 6PM
+              </div>
             </div>
           </div>
         ) : (
@@ -365,7 +350,7 @@ export function ChatPage() {
             </button>
           </form>
           <div className="flex justify-between px-1.5 pt-2 text-[11px] text-text-light">
-            <span>Talk to Duo · 5 agents on standby</span>
+            <span>Talk to Duo · Always verify information</span>
             <span>
               <kbd
                 className="bg-bg-card border border-border-light rounded px-1 py-px text-[10px]"
@@ -380,14 +365,14 @@ export function ChatPage() {
       </div>
 
       {/* Right rail */}
-      <aside
+      {/* <aside
         className="bg-bg-card flex flex-col overflow-y-auto gap-4 min-h-0"
         style={{ padding: "18px 18px 24px" }}
       >
         <RailFeed lines={feed} />
         <RailWorkflow stage={stage} />
-        {/* <RailMemory /> */}
-      </aside>
+        <RailMemory />
+      </aside> */}
     </div>
   );
 }

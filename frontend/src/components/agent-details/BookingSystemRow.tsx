@@ -1,3 +1,6 @@
+import { Badge } from "@/components/ui/badge";
+import { PlusIcon } from "lucide-react";
+
 const logoGradients: Record<string, string> = {
   teal: "linear-gradient(135deg, #0D6F66, #2DD4BF)",
   orange: "linear-gradient(135deg, #B0461A, #FF7A4A)",
@@ -22,12 +25,16 @@ interface BookingSystem {
 
 interface BookingSystemRowProps {
   system: BookingSystem;
+  comingSoon?: boolean;
 }
 
-export function BookingSystemRow({ system }: BookingSystemRowProps) {
+export function BookingSystemRow({
+  system,
+  comingSoon,
+}: BookingSystemRowProps) {
   return (
     <div
-      className="bg-bg-card border border-border-light rounded-xl flex flex-col gap-3.5 transition-all hover:border-border-mid hover:shadow-[0_6px_16px_rgba(0,0,0,0.03)]"
+      className="relative bg-bg-card border border-border-light rounded-xl flex flex-col gap-3.5 transition-all hover:border-border-mid hover:shadow-[0_6px_16px_rgba(0,0,0,0.03)]"
       style={{ padding: "18px 20px" }}
     >
       {/* Head */}
@@ -50,18 +57,23 @@ export function BookingSystemRow({ system }: BookingSystemRowProps) {
         </div>
 
         <div className="flex flex-col gap-[3px] min-w-0">
-          <div className="text-[15px] font-semibold text-text-dark">
-            {system.name}
+          <div className="flex items-center gap-2">
+            <div className="text-[15px] font-semibold text-text-dark">
+              {system.name}
+            </div>
+            {comingSoon && <Badge>Coming Soon</Badge>}
           </div>
           <div className="text-[12px] text-text-light">{system.type}</div>
         </div>
 
         <div
           className="inline-flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.08em]"
-          style={{ color: "#146E3D" }}
+          style={{ color: comingSoon ? "#8A8A85" : "#146E3D" }}
         >
-          <span className="w-1.5 h-1.5 rounded-full bg-accent-success shadow-[0_0_6px_#3DDB7A]" />
-          Connected
+          <span
+            className={`w-1.5 h-1.5 rounded-full ${comingSoon ? "bg-text-light" : "bg-accent-success shadow-[0_0_6px_#3DDB7A]"}`}
+          />
+          {comingSoon ? "Not Connected" : "Connected"}
         </div>
 
         <div className="flex gap-6 pl-[18px] border-l border-border-light">
@@ -124,29 +136,18 @@ export function BookingSystemRow({ system }: BookingSystemRowProps) {
               </span>
             </span>
           ))}
-          <button
-            className="inline-flex items-center gap-1.5 rounded-full text-text-light transition-colors hover:border-text-mid hover:text-text-dark hover:bg-bg-card cursor-pointer"
+          <div
+            className="inline-flex bg-white border border-dashed border-border-mid items-center gap-1.5 rounded-full text-text-dark transition-colors hover:border-text-mid hover:text-white hover:bg-text-dark cursor-pointer hover:border-solid"
             style={{
               fontSize: 12.5,
               padding: "5px 11px 5px 9px",
-              border: "1px dashed #D6D6D2",
-              background: "transparent",
+              // border: "1px dashed #D6D6D2",
+              // background: "transparent",
             }}
           >
-            <svg
-              width={10}
-              height={10}
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2.4}
-              strokeLinecap="round"
-            >
-              <line x1="12" y1="5" x2="12" y2="19" />
-              <line x1="5" y1="12" x2="19" y2="12" />
-            </svg>
-            Add location
-          </button>
+            <PlusIcon className="w-3 h-3" />
+            Request location
+          </div>
         </div>
       </div>
     </div>

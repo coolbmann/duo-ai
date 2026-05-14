@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { AGENTS, BOOKING_SYSTEMS } from "@/data";
 import { BookingSystemRow } from "./BookingSystemRow";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { MessageSquareIcon, SettingsIcon } from "lucide-react";
 
 const iconTileColors: Record<string, string> = {
   lime: "bg-[#EDFBC8] text-[#4A6B11]",
@@ -20,17 +21,14 @@ export function AgentDetailsPage() {
     (n, s) => n + s.locations.length,
     0,
   );
-  const totalCourts = BOOKING_SYSTEMS.reduce(
-    (n, s) => n + s.locations.reduce((c, l) => c + l.courts, 0),
+  const totalCourts = BOOKING_SYSTEMS.flatMap((s) => s.locations).reduce(
+    (c, l) => c + l.courts,
     0,
   );
 
   return (
-    <div className="h-full overflow-y-auto bg-bg-app">
-      <div
-        className="max-w-[1280px] mx-auto"
-        style={{ padding: "36px 44px 80px" }}
-      >
+    <div className=" bg-bg-app">
+      <div className="py-10 px-14 ">
         {/* Back link */}
         <button
           onClick={() => navigate("/agents")}
@@ -82,8 +80,8 @@ export function AgentDetailsPage() {
               {[
                 { k: "Runs · 30d", v: agent.runs },
                 { k: "Triggers", v: agent.triggers },
-                { k: "Success rate", v: "98.4%" },
-                { k: "Avg. completion", v: "7.2s" },
+                // { k: "Success rate", v: "98.4%" },
+                // { k: "Avg. completion", v: "7.2s" },
               ].map(({ k, v }) => (
                 <div key={k} className="flex flex-col gap-1">
                   <span className="text-[10.5px] uppercase tracking-[0.08em] text-text-light font-medium">
@@ -98,45 +96,20 @@ export function AgentDetailsPage() {
           </div>
 
           <div className="flex items-center gap-2">
-            <button
+            <div
               onClick={() => navigate("/chat")}
-              className="inline-flex items-center gap-2 bg-text-dark text-white px-4 py-2.5 rounded-lg text-[13px] font-medium hover:bg-black transition-colors"
+              className="inline-flex items-center gap-2 bg-[#1a1a1a] text-white px-4 py-2 rounded-lg text-[13px] font-medium hover:cursor-pointer"
             >
-              <svg
-                width={14}
-                height={14}
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z" />
-              </svg>
+              <MessageSquareIcon className="w-3 h-3" />
               Run in chat
-            </button>
-            <button
-              className="w-9 h-9 rounded-lg bg-bg-hover text-text-mid inline-flex items-center justify-center transition-colors hover:bg-[#EAEAE6] hover:text-text-dark"
-              aria-label="Settings"
-            >
-              <svg
-                width={16}
-                height={16}
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <circle cx="12" cy="12" r="3" />
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
-              </svg>
-            </button>
+            </div>
           </div>
         </div>
 
         {/* Tabs */}
         <Tabs defaultValue="booking-systems" className="mb-0">
           <TabsList className="mb-[26px]">
-            <TabsTrigger value="booking-systems">Booking systems</TabsTrigger>
+            <TabsTrigger value="booking-systems">Integrations</TabsTrigger>
           </TabsList>
 
           <TabsContent value="booking-systems">
@@ -147,8 +120,12 @@ export function AgentDetailsPage() {
                   Connected booking systems
                 </h2>
                 <p className="text-[12.5px] text-text-light m-0">
-                  {BOOKING_SYSTEMS.length} integrations · {totalLocations}{" "}
-                  locations · {totalCourts} courts available to this agent
+                  {
+                    BOOKING_SYSTEMS.filter((s) => s.status === "connected")
+                      .length
+                  }{" "}
+                  integrations · {totalLocations} locations · {totalCourts}{" "}
+                  courts available to this agent
                 </p>
               </div>
             </div>
@@ -156,11 +133,15 @@ export function AgentDetailsPage() {
             {/* Systems list */}
             <div className="flex flex-col gap-3">
               {BOOKING_SYSTEMS.map((s) => (
-                <BookingSystemRow key={s.id} system={s} />
+                <BookingSystemRow
+                  key={s.id}
+                  system={s}
+                  comingSoon={s.status === "notConnected"}
+                />
               ))}
 
-              <button
-                className="flex items-center gap-4 border border-dashed border-border-mid rounded-xl bg-transparent cursor-pointer text-left transition-colors hover:border-text-mid hover:bg-bg-hover"
+              <div
+                className="flex self-start items-center gap-4 border border-dashed border-border-mid rounded-xl bg-white cursor-pointer text-left transition-colors hover:border-text-mid "
                 style={{ padding: "18px 22px" }}
               >
                 <div className="w-10 h-10 rounded-[10px] bg-bg-hover text-text-mid inline-flex items-center justify-center text-[20px]">
@@ -168,13 +149,14 @@ export function AgentDetailsPage() {
                 </div>
                 <div>
                   <div className="text-[14px] text-text-dark font-semibold">
-                    Connect another booking system
+                    Request another booking system integration
                   </div>
                   <div className="text-[12px] text-text-light mt-0.5">
-                    Court Reserve · Skedda · Tennis Booker · custom API
+                    Let us know which courts you'd like to add, and we'll get it
+                    added
                   </div>
                 </div>
-              </button>
+              </div>
             </div>
           </TabsContent>
         </Tabs>

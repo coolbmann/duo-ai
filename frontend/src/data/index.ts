@@ -6,7 +6,7 @@ export const AGENTS = [
     icon: "🎾",
     iconColor: "lime" as const,
     runs: 142,
-    triggers: "Manual · Chat",
+    triggers: "Chat",
   },
   {
     id: "dupr-analysis",
@@ -14,8 +14,8 @@ export const AGENTS = [
     desc: "Analyzes player DUPR ratings, match results and provides a detailed analysis of the player's performance.",
     icon: "💻",
     iconColor: "purple",
-    runs: 142,
-    triggers: "Manual · Chat",
+    runs: 0,
+    triggers: "Chat",
   },
 ];
 
@@ -75,13 +75,14 @@ export const BOOKING_SYSTEMS = [
     logoMark: "V",
     logoColor: "teal" as const,
     status: "connected",
-    connectedOn: "Mar 14",
+    // connectedOn: "Mar 14",
     lastSync: "2 min ago",
     locations: [
-      { name: "Sydney Olympic Park", courts: 8 },
-      { name: "Bondi Sports Centre", courts: 4 },
-      { name: "Manly Vale", courts: 3 },
-      { name: "Lane Cove West", courts: 2 },
+      {
+        name: "The Willis Recreation and Sports Centre (Willoughby)",
+        courts: 8,
+      },
+      { name: "Seaforth (Wakehurst)", courts: 8 },
     ],
   },
   {
@@ -91,13 +92,9 @@ export const BOOKING_SYSTEMS = [
     logoMark: "P",
     logoColor: "orange" as const,
     status: "connected",
-    connectedOn: "Feb 02",
+    // connectedOn: "Feb 02",
     lastSync: "14 min ago",
-    locations: [
-      { name: "Alexandria Padel & Pickleball", courts: 6 },
-      { name: "Marrickville Sports Centre", courts: 4 },
-      { name: "Centennial Park Courts", courts: 2 },
-    ],
+    locations: [{ name: "Padel Club - North Rocks", courts: 6 }],
   },
   {
     id: "playbypoint",
@@ -105,13 +102,10 @@ export const BOOKING_SYSTEMS = [
     type: "Pickleball",
     logoMark: "Pb",
     logoColor: "purple" as const,
-    status: "connected",
-    connectedOn: "Apr 28",
-    lastSync: "1 hr ago",
-    locations: [
-      { name: "Redfern Pickleball Club", courts: 2 },
-      { name: "Hugo Street Courts", courts: 3 },
-    ],
+    status: "notConnected",
+    // connectedOn: "Apr 28",
+    lastSync: "-",
+    locations: [],
   },
 ];
 

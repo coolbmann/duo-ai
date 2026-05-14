@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 
 const iconTileColors: Record<string, string> = {
   lime: "bg-[#EDFBC8] text-[#4A6B11]",
@@ -17,6 +18,8 @@ interface AgentCardProps {
   iconColor: string;
   runs: number;
   triggers: string;
+  comingSoon?: boolean;
+  inactive?: boolean;
   onClick: () => void;
 }
 
@@ -27,13 +30,23 @@ export function AgentCard({
   iconColor,
   runs,
   triggers,
+  comingSoon,
+  inactive,
   onClick,
 }: AgentCardProps) {
   return (
     <div
-      onClick={onClick}
-      className="bg-bg-card border border-solid border-border-mid rounded-xl p-5 flex flex-col gap-3.5 cursor-pointer text-left transition-all duration-200 hover:-translate-y-px hover:border-border-mid hover:shadow-[0_6px_20px_rgba(0,0,0,0.04)]"
+      onClick={comingSoon ? undefined : onClick}
+      className={cn(
+        "relative bg-bg-card border border-solid border-border-mid rounded-xl p-5 flex flex-col gap-3.5 text-left transition-all duration-200",
+        comingSoon
+          ? "cursor-default opacity-100"
+          : "cursor-pointer hover:-translate-y-px hover:border-border-mid hover:shadow-[0_6px_20px_rgba(0,0,0,0.04)]",
+      )}
     >
+      {comingSoon && (
+        <Badge className="absolute top-3 right-3">Coming Soon</Badge>
+      )}
       <div
         className={cn(
           "w-[42px] h-[42px] rounded-[10px] inline-flex items-center justify-center text-[20px]",
@@ -49,8 +62,15 @@ export function AgentCard({
         </div>
       </div>
       <div className="flex items-center gap-2.5 text-[11px] text-text-light mt-auto pt-2.5 border-t border-border-light">
-        <span className="w-1.5 h-1.5 rounded-full bg-accent-success shadow-[0_0_6px_#3DDB7A]" />
-        <span>Active</span>
+        <span
+          className={cn(
+            "w-1.5 h-1.5 rounded-full",
+            inactive
+              ? "bg-text-light"
+              : "bg-accent-success shadow-[0_0_6px_#3DDB7A]",
+          )}
+        />
+        <span>{inactive ? "Inactive" : "Active"}</span>
         <span className="text-border-mid">·</span>
         <span>{triggers}</span>
       </div>
@@ -58,9 +78,11 @@ export function AgentCard({
         <span className="text-text-mid font-medium">
           {runs} runs this month
         </span>
-        <span className="text-brand font-medium flex items-center gap-1">
-          Open <span>→</span>
-        </span>
+        {!inactive && (
+          <span className="text-brand font-medium flex items-center gap-1">
+            Open <span>→</span>
+          </span>
+        )}
       </div>
     </div>
   );

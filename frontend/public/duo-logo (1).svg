@@ -1,0 +1,22 @@
+<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="duo-ball" cx="38%" cy="34%" r="72%">
+      <stop offset="0%" stop-color="#E6FF9C"></stop>
+      <stop offset="55%" stop-color="#B5F23D"></stop>
+      <stop offset="100%" stop-color="#7BC42A"></stop>
+    </radialGradient>
+    <mask id="duo-holes">
+      <rect width="32" height="32" fill="white"></rect>
+      <circle cx="11" cy="9" r="1.55" fill="black"></circle>
+      <circle cx="18" cy="7.2" r="1.55" fill="black"></circle>
+      <circle cx="23.6" cy="11.5" r="1.55" fill="black"></circle>
+      <circle cx="9.8" cy="16" r="1.55" fill="black"></circle>
+      <circle cx="16.4" cy="15.2" r="1.55" fill="black"></circle>
+      <circle cx="22.5" cy="18.4" r="1.55" fill="black"></circle>
+      <circle cx="12.6" cy="22.5" r="1.55" fill="black"></circle>
+      <circle cx="19" cy="23.8" r="1.55" fill="black"></circle>
+    </mask>
+  </defs>
+  <circle cx="16" cy="16" r="13" fill="url(#duo-ball)" mask="url(#duo-holes)"></circle>
+  <ellipse cx="11.5" cy="10.5" rx="3.2" ry="1.6" fill="white" fill-opacity="0.32" transform="rotate(-32 11.5 10.5)"></ellipse>
+</svg>

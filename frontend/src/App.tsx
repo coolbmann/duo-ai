@@ -11,7 +11,7 @@ function Layout() {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <SidebarInset className="overflow-hidden min-h-0 h-full">
+      <SidebarInset className="overflow-y-auto min-h-0 h-screen">
         <Routes>
           <Route path="/" element={<Navigate to="/agents" replace />} />
           <Route path="/agents" element={<AgentsPage />} />
