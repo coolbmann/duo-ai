@@ -38,7 +38,12 @@ const NAV_SECTIONS: { section: string; items: NavItem[] }[] = [
     section: "Chat",
     items: [
       { to: "/chat", label: "Current session", icon: "chat" },
-      { to: "/sessions", label: "All Sessions", icon: "list" },
+      {
+        to: "/sessions",
+        label: "All Sessions",
+        icon: "list",
+        pill: "Coming Soon",
+      },
     ],
   },
   // {

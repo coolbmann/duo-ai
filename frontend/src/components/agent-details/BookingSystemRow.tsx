@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { PlusIcon } from "lucide-react";
+import { requestModalStore } from "@/store/requestModal";
 
 const logoGradients: Record<string, string> = {
   teal: "linear-gradient(135deg, #0D6F66, #2DD4BF)",
@@ -141,9 +142,8 @@ export function BookingSystemRow({
             style={{
               fontSize: 12.5,
               padding: "5px 11px 5px 9px",
-              // border: "1px dashed #D6D6D2",
-              // background: "transparent",
             }}
+            onClick={() => requestModalStore.open()}
           >
             <PlusIcon className="w-3 h-3" />
             Request location

@@ -76,7 +76,7 @@ export function AgentCard({
       </div>
       <div className="flex justify-between items-center text-[12px]">
         <span className="text-text-mid font-medium">
-          {runs} runs this month
+          {runs} queries this month
         </span>
         {!inactive && (
           <span className="text-brand font-medium flex items-center gap-1">

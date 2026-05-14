@@ -7,6 +7,7 @@ import { AgentDetailsPage } from '@/components/agent-details/AgentDetailsPage'
 import { WorkflowsPage } from '@/components/workflows/WorkflowsPage'
 import { AllSessionsPage } from '@/components/sessions/AllSessionsPage'
 import { ChatPage } from '@/components/chat/ChatPage'
+import { RequestModal } from '@/components/RequestModal'
 
 const CHAT_ID_KEY = 'duo_chat_id'
 
@@ -50,6 +51,7 @@ function App() {
   return (
     <BrowserRouter>
       <Layout />
+      <RequestModal />
     </BrowserRouter>
   )
 }

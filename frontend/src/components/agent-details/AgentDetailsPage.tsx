@@ -3,6 +3,7 @@ import { AGENTS, BOOKING_SYSTEMS } from "@/data";
 import { BookingSystemRow } from "./BookingSystemRow";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { MessageSquareIcon, SettingsIcon } from "lucide-react";
+import { requestModalStore } from "@/store/requestModal";
 
 const iconTileColors: Record<string, string> = {
   lime: "bg-[#EDFBC8] text-[#4A6B11]",
@@ -27,7 +28,7 @@ export function AgentDetailsPage() {
   );
 
   return (
-    <div className=" bg-bg-app">
+    <div className=" bg-bg-app h-full">
       <div className="py-10 px-14 ">
         {/* Back link */}
         <button
@@ -78,7 +79,7 @@ export function AgentDetailsPage() {
             </p>
             <div className="flex flex-wrap gap-7 mt-3 pt-3.5 border-t border-dashed border-border-light">
               {[
-                { k: "Runs · 30d", v: agent.runs },
+                { k: "Queries · 30d", v: agent.runs },
                 { k: "Triggers", v: agent.triggers },
                 // { k: "Success rate", v: "98.4%" },
                 // { k: "Avg. completion", v: "7.2s" },
@@ -143,6 +144,7 @@ export function AgentDetailsPage() {
               <div
                 className="flex self-start items-center gap-4 border border-dashed border-border-mid rounded-xl bg-white cursor-pointer text-left transition-colors hover:border-text-mid "
                 style={{ padding: "18px 22px" }}
+                onClick={() => requestModalStore.open()}
               >
                 <div className="w-10 h-10 rounded-[10px] bg-bg-hover text-text-mid inline-flex items-center justify-center text-[20px]">
                   +
