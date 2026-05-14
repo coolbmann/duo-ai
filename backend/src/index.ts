@@ -13,7 +13,7 @@ import { FeedbackController } from "./controller/FeedbackController";
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors({ origin: "http://localhost:5174" }));
+app.use(cors({ origin: "*" }));
 
 useExpressServer(app, {
   controllers: [
@@ -25,7 +25,7 @@ useExpressServer(app, {
 
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
-  cors: { origin: "http://localhost:5174", methods: ["GET", "POST"] },
+  cors: { origin: "*", methods: ["GET", "POST"] },
 });
 
 registerSockets(io);

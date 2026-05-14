@@ -139,7 +139,7 @@ export function AgentDetailsPage() {
                 <BookingSystemRow
                   key={s.id}
                   system={s}
-                  comingSoon={s.status === "notConnected"}
+                  comingSoon={s.status === "notConnected" || s.id === "playtomic"}
                 />
               ))}
 

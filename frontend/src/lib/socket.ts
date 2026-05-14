@@ -1,6 +1,6 @@
 import { io } from "socket.io-client";
 
 const createSocket = (namespace: string) =>
-  io(`http://localhost:3000${namespace}`, { autoConnect: false });
+  io(`${import.meta.env.VITE_SERVER_URL}${namespace}`, { autoConnect: false });
 
 export const chatSocket = createSocket("/chat");

@@ -91,10 +91,12 @@ export const BOOKING_SYSTEMS = [
     type: "Pickleball",
     logoMark: "P",
     logoColor: "orange" as const,
-    status: "connected",
+    status: "notConnected",
     // connectedOn: "Feb 02",
-    lastSync: "14 min ago",
-    locations: [{ name: "Padel Club - North Rocks", courts: 6 }],
+    lastSync: "-",
+    locations: [
+      // { name: "Padel Club - North Rocks", courts: 6 }
+    ],
   },
   {
     id: "playbypoint",
