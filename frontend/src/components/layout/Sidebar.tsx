@@ -37,7 +37,7 @@ const NAV_SECTIONS: { section: string; items: NavItem[] }[] = [
   {
     section: "Chat",
     items: [
-      { to: "/chat", label: "Current session", icon: "chat", pill: "LIVE" },
+      { to: "/chat", label: "Current session", icon: "chat" },
       { to: "/sessions", label: "All Sessions", icon: "list" },
     ],
   },
@@ -47,7 +47,7 @@ const NAV_SECTIONS: { section: string; items: NavItem[] }[] = [
   // },
 ];
 
-export function AppSidebar() {
+export function AppSidebar({ onNewChat }: { onNewChat: () => void }) {
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
@@ -124,12 +124,13 @@ export function AppSidebar() {
               </SidebarMenu>
             </SidebarGroupContent>
             {sec.section === "Chat" && (
-              <div className="my-2 bg-sidebar-accent rounded-sm">
+              <div className="my-2 bg-sidebar-accent rounded-md">
                 <div
-                  // variant="outline"
-                  // size="sm"
                   className="flex gap-2 items-center text-sidebar-foreground/50 hover:text-sidebar-foreground hover:cursor-pointer  text-sm px-2 py-2"
-                  onClick={() => navigate("/chat")}
+                  onClick={() => {
+                    onNewChat();
+                    navigate("/chat");
+                  }}
                 >
                   <Plus
                     className="transition-transform duration-150 group-hover:scale-125"

@@ -143,13 +143,13 @@ function StreamingMessage({
   );
 }
 
-export function ChatPage() {
+export function ChatPage({ chatId }: { chatId: string }) {
   const [stage, setStage] = useState<Stage>("idle");
   const [feed, setFeed] = useState<FeedLine[]>([]);
   const [input, setInput] = useState("");
   const chatRef = useRef<HTMLDivElement>(null);
 
-  const { chatMessages, sendMessage } = useChatSocket("123");
+  const { chatMessages, sendMessage } = useChatSocket(chatId);
 
   useEffect(() => {
     if (chatRef.current)
