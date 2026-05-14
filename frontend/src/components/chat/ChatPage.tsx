@@ -152,6 +152,7 @@ export function ChatPage({ chatId }: { chatId: string }) {
   const { chatMessages, sendMessage } = useChatSocket(chatId);
 
   useEffect(() => {
+    console.log("chatMessages", chatMessages);
     if (chatRef.current)
       chatRef.current.scrollTop = chatRef.current.scrollHeight;
   }, [chatMessages]);

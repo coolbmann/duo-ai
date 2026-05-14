@@ -1,12 +1,31 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { chatSocket } from "@/lib/socket";
 import type { Message } from "@/components/chat/ChatPage";
 
+// Module-level cache — survives navigation, cleared when chatId changes
+const messageCache = new Map<string, Message[]>();
+
+function getMessages(chatId: string): Message[] {
+  return messageCache.get(chatId) ?? [];
+}
+
+function setMessages(chatId: string, updater: (prev: Message[]) => Message[]) {
+  const next = updater(getMessages(chatId));
+  messageCache.set(chatId, next);
+  return next;
+}
+
 export function useChatSocket(chatId: string) {
-  const [chatMessages, setChatMessages] = useState<Message[]>([]);
+  const [chatMessages, setChatMessages] = useState<Message[]>(() => getMessages(chatId));
+
+  const update = useCallback((updater: (prev: Message[]) => Message[]) => {
+    setChatMessages(setMessages(chatId, updater));
+  }, [chatId]);
 
   useEffect(() => {
-    console.log("useChatSocket", chatId);
+    // Restore any cached messages when returning to the same chatId
+    setChatMessages(getMessages(chatId));
+
     chatSocket.connect();
 
     chatSocket.on("connect", () => {
@@ -14,7 +33,7 @@ export function useChatSocket(chatId: string) {
     });
 
     chatSocket.on("server_message", ({ text }) => {
-      setChatMessages((prev) => [
+      update((prev) => [
         ...prev,
         { kind: "agent", text, agent: "COURT BOOKING AGENT" },
       ]);
@@ -26,11 +45,11 @@ export function useChatSocket(chatId: string) {
       chatSocket.off("server_message");
       chatSocket.disconnect();
     };
-  }, [chatId]);
+  }, [chatId, update]);
 
   const sendMessage = (text: string) => {
     if (!text.trim()) return;
-    setChatMessages((prev) => [...prev, { kind: "user", text }]);
+    update((prev) => [...prev, { kind: "user", text }]);
     chatSocket.emit("send_message", { chatId, text });
   };
 
