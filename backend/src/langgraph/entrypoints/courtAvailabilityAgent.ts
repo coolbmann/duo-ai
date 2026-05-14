@@ -18,6 +18,12 @@ import { BookingSystemVenueMap } from "../../utils/enums";
 
 const checkpointer = new MemorySaver();
 
+export const clearAgentMemory = (threadId: string) => {
+  console.log("before:", Object.keys(checkpointer.storage));
+  delete checkpointer.storage[threadId];
+  console.log("after:", Object.keys(checkpointer.storage));
+};
+
 const courtAvailabilityService = new CourtAvailabilityService();
 
 export const courtAvailabilityAgent = entrypoint(
