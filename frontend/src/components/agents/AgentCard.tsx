@@ -38,14 +38,19 @@ export function AgentCard({
     <div
       onClick={comingSoon ? undefined : onClick}
       className={cn(
-        "relative bg-bg-card border border-solid border-border-mid rounded-xl p-5 flex flex-col gap-3.5 text-left transition-all duration-200",
+        "relative bg-bg-card border border-solid border-border-light rounded-xl p-5 flex flex-col gap-3.5 text-left transition-all duration-200",
         comingSoon
           ? "cursor-default opacity-100"
           : "cursor-pointer hover:-translate-y-px hover:border-border-mid hover:shadow-[0_6px_20px_rgba(0,0,0,0.04)]",
       )}
     >
       {comingSoon && (
-        <Badge className="absolute top-3 right-3">Coming Soon</Badge>
+        <Badge
+          className="absolute top-3 right-3 border-transparent"
+          style={{ background: "#B5F23D", color: "#0D0F0E" }}
+        >
+          Coming Soon
+        </Badge>
       )}
       <div
         className={cn(

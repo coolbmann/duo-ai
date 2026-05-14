@@ -42,7 +42,7 @@ export function AgentsPage() {
 
         {/* Toolbar */}
         <div className="flex items-center justify-between gap-3 mb-[22px]">
-          <div className="flex-1 max-w-[360px] flex items-center gap-2 bg-bg-card border border-border-mid rounded-lg px-3 py-2.5 text-[13px] text-text-mid transition-colors focus-within:border-border-mid">
+          <div className="flex-1 max-w-[360px] flex items-center gap-2 bg-bg-card border border-border-light rounded-lg px-3 py-2.5 text-[13px] text-text-mid transition-colors focus-within:border-border-mid">
             <SearchIcon className="w-4 h-4" />
             <input
               className="flex-1 border-none outline-none bg-transparent text-[13px]"

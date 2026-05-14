@@ -1,11 +1,14 @@
 import { Badge } from "@/components/ui/badge";
 import { PlusIcon } from "lucide-react";
 import { requestModalStore } from "@/store/requestModal";
+import voyagerLogo from "@/assets/voyager_logo.png";
+import playtomicLogo from "@/assets/playtomic_logo.jpeg";
+import playbypointLogo from "@/assets/playbypoint_logo.png";
 
-const logoGradients: Record<string, string> = {
-  teal: "linear-gradient(135deg, #0D6F66, #2DD4BF)",
-  orange: "linear-gradient(135deg, #B0461A, #FF7A4A)",
-  purple: "linear-gradient(135deg, #5B3DB5, #8B5CF6)",
+const logoImages: Record<string, string> = {
+  voyager: voyagerLogo,
+  playtomic: playtomicLogo,
+  playbypoint: playbypointLogo,
 };
 
 interface Location {
@@ -44,17 +47,14 @@ export function BookingSystemRow({
         style={{ gridTemplateColumns: "auto 1fr auto auto auto" }}
       >
         <div
-          className="inline-flex items-center justify-center text-white rounded-[10px]"
-          style={{
-            width: 40,
-            height: 40,
-            background: logoGradients[system.logoColor],
-            fontFamily: "var(--font-display)",
-            fontSize: 18,
-            letterSpacing: "0.04em",
-          }}
+          className="inline-flex items-center justify-center rounded-[10px] overflow-hidden  bg-white"
+          style={{ width: 40, height: 40 }}
         >
-          {system.logoMark}
+          <img
+            src={logoImages[system.id]}
+            alt={system.name}
+            className="w-full h-full object-contain"
+          />
         </div>
 
         <div className="flex flex-col gap-[3px] min-w-0">
@@ -62,7 +62,14 @@ export function BookingSystemRow({
             <div className="text-[15px] font-semibold text-text-dark">
               {system.name}
             </div>
-            {comingSoon && <Badge>Coming Soon</Badge>}
+            {comingSoon && (
+              <Badge
+                className="border-transparent"
+                style={{ background: "#B5F23D", color: "#0D0F0E" }}
+              >
+                Coming Soon
+              </Badge>
+            )}
           </div>
           <div className="text-[12px] text-text-light">{system.type}</div>
         </div>
