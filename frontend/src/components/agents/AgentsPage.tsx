@@ -2,11 +2,15 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AGENTS } from "@/data";
 import { AgentCard } from "./AgentCard";
-import { PlusIcon, SearchIcon } from "lucide-react";
+import { SearchIcon } from "lucide-react";
+import { useGetAgentStatsQuery } from "@/components/agents/agentApi";
 
 export function AgentsPage() {
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
+  const { data: courtBookingStats } = useGetAgentStatsQuery(
+    "court-booking-agent",
+  );
 
   const handleOpen = (id: string) => {
     if (id === "court-booking") {
@@ -14,6 +18,13 @@ export function AgentsPage() {
     } else {
       navigate("/chat");
     }
+  };
+
+  const getRuns = (id: string) => {
+    if (id === "court-booking") {
+      return courtBookingStats?.run_count ?? 0;
+    }
+    return AGENTS.find((a) => a.id === id)?.runs ?? 0;
   };
 
   return (
@@ -55,6 +66,7 @@ export function AgentsPage() {
             <AgentCard
               key={a.id}
               {...a}
+              runs={getRuns(a.id)}
               comingSoon={["dupr-analysis"].includes(a.id)}
               inactive={a.id === "dupr-analysis"}
               onClick={() => handleOpen(a.id)}

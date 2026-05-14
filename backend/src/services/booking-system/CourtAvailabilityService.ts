@@ -1,9 +1,7 @@
 import { VoyagerAPIService } from "./VoyagerAPIService";
 import { type BookingSystemService } from "./BookingSystemService";
-import {
-  BookingSystemValue,
-  BookingSystemVenueMap,
-} from "../../utils/enums";
+import { BookingSystemValue, BookingSystemVenueMap } from "../../utils/enums";
+import { supabase } from "../../lib/supabase";
 
 export class CourtAvailabilityService {
   private services: Record<BookingSystemValue, BookingSystemService>;
@@ -103,6 +101,47 @@ export class CourtAvailabilityService {
     }
 
     return Array.from(groupMap.values());
+  }
+
+  public async incrementAgentRunCount(
+    agentName: string = "court-booking-agent",
+  ) {
+    const data = await this.getAgentDataByName(agentName);
+
+    console.log("data: ", data);
+
+    await this.patchAgentDataByName(agentName, {
+      run_count: data.run_count + 1,
+    });
+
+    return { run_count: data.run_count + 1 };
+  }
+
+  public async getAgentDataByName(agentName: string) {
+    try {
+      const { data, error } = await supabase
+        .from("agent")
+        .select("*")
+        .eq("name", agentName)
+        .single();
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error(
+        `Error getting ${agentName} run count: ${JSON.stringify(error)}`,
+      );
+      return 0;
+    }
+  }
+
+  private async patchAgentDataByName(agentName: string, data: any) {
+    try {
+      await supabase.from("agent").update(data).eq("name", agentName);
+    } catch (error) {
+      console.error(
+        `Error patching ${agentName} data: ${JSON.stringify(error)}`,
+      );
+    }
   }
 }
 

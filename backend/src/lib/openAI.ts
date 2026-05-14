@@ -7,7 +7,7 @@ class LLMService {
   private constructor() {
     this.llm = new ChatOpenAI({
       model: "gpt-4o-mini",
-      maxTokens: 1000,
+      maxTokens: 2000,
       apiKey: process.env.OPENAI_API_KEY,
       temperature: 0,
     });

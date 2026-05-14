@@ -4,6 +4,7 @@ import { BookingSystemRow } from "./BookingSystemRow";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { MessageSquareIcon, SettingsIcon } from "lucide-react";
 import { requestModalStore } from "@/store/requestModal";
+import { useGetAgentStatsQuery } from "@/components/agents/agentApi";
 
 const iconTileColors: Record<string, string> = {
   lime: "bg-[#EDFBC8] text-[#4A6B11]",
@@ -17,6 +18,7 @@ const iconTileColors: Record<string, string> = {
 export function AgentDetailsPage() {
   const navigate = useNavigate();
   const agent = AGENTS.find((a) => a.id === "court-booking")!;
+  const { data: agentStats } = useGetAgentStatsQuery("court-booking-agent");
 
   const totalLocations = BOOKING_SYSTEMS.reduce(
     (n, s) => n + s.locations.length,
@@ -79,7 +81,7 @@ export function AgentDetailsPage() {
             </p>
             <div className="flex flex-wrap gap-7 mt-3 pt-3.5 border-t border-dashed border-border-light">
               {[
-                { k: "Queries · 30d", v: agent.runs },
+                { k: "Queries · 30d", v: agentStats?.run_count ?? agent.runs },
                 { k: "Triggers", v: agent.triggers },
                 // { k: "Success rate", v: "98.4%" },
                 // { k: "Avg. completion", v: "7.2s" },

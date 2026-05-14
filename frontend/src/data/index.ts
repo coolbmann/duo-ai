@@ -5,7 +5,7 @@ export const AGENTS = [
     desc: "Find available courts at a time of your choosing and provides quick-access booking links.",
     icon: "🎾",
     iconColor: "lime" as const,
-    runs: 142,
+    runs: 0,
     triggers: "Chat",
   },
   {

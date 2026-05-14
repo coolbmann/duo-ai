@@ -23,6 +23,9 @@ const courtAvailabilityService = new CourtAvailabilityService();
 export const courtAvailabilityAgent = entrypoint(
   { name: "courtAvailability", checkpointer },
   async (message: BaseMessage[], config: LangGraphRunnableConfig) => {
+    // Step 0: GET current agent run_count and increment it. No need to await this.
+    courtAvailabilityService.incrementAgentRunCount();
+
     // Step 1: Classify Intent
     // Determine which court availability agent to call, based on location and time
     const previous = (getPreviousState<any[]>() ?? []).map(toBaseMessage);

@@ -35,7 +35,7 @@ function Layout() {
       <AppSidebar onNewChat={handleNewChat} />
       <SidebarInset className="overflow-y-auto min-h-0 h-screen">
         <Routes>
-          <Route path="/" element={<Navigate to="/agents" replace />} />
+          <Route path="/" element={<Navigate to="/chat" replace />} />
           <Route path="/agents" element={<AgentsPage />} />
           <Route path="/agents/court-booking" element={<AgentDetailsPage />} />
           <Route path="/workflows" element={<WorkflowsPage />} />
