@@ -116,7 +116,7 @@ export function BookingSystemRow({
           {system.locations.map((loc) => (
             <span
               key={loc.name}
-              className="inline-flex items-center gap-1.5 bg-bg-app border border-border-light rounded-full font-medium text-text-dark transition-colors hover:border-border-mid hover:bg-bg-card cursor-default"
+              className="inline-flex items-center gap-1.5 bg-bg-app border border-border-light rounded-full font-medium text-text-dark transition-colors"
               style={{ fontSize: 12.5, padding: "5px 11px 5px 9px" }}
             >
               <svg

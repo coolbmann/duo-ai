@@ -13,4 +13,9 @@ export class AgentController {
   public async getAgentDataByName(@Param("agentName") agentName: string) {
     return await this.courtAvailabilityService.getAgentDataByName(agentName);
   }
+
+  @Get("/:agentName/booking-systems")
+  public async getCourtAvailabilityBookingSystems() {
+    return await this.courtAvailabilityService.getCourtAvailabilityBookingSystems();
+  }
 }

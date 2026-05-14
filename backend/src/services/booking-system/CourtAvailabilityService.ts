@@ -95,13 +95,11 @@ export class CourtAvailabilityService {
           slots: [],
         });
       }
-      groupMap
-        .get(key)!
-        .slots.push({
-          id: slot.id ?? null,
-          time: slot.time,
-          court: slot.court,
-        });
+      groupMap.get(key)!.slots.push({
+        id: slot.id ?? null,
+        time: slot.time,
+        court: slot.court,
+      });
     }
 
     return Array.from(groupMap.values());
@@ -116,6 +114,7 @@ export class CourtAvailabilityService {
 
     await this.patchAgentDataByName(agentName, {
       run_count: data.run_count + 1,
+      last_queried: new Date().toISOString(),
     });
 
     return { run_count: data.run_count + 1 };
@@ -144,6 +143,32 @@ export class CourtAvailabilityService {
     } catch (error) {
       console.error(
         `Error patching ${agentName} data: ${JSON.stringify(error)}`,
+      );
+    }
+  }
+
+  public async getCourtAvailabilityBookingSystems() {
+    try {
+      const { data, error } = await supabase.from("booking_system").select("*");
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error(
+        `Error getting court availability booking systems: ${JSON.stringify(error)}`,
+      );
+      return [];
+    }
+  }
+
+  public async updateBookingSystemLastAccessed(bookingSystemName: string) {
+    try {
+      await supabase
+        .from("booking_system")
+        .update({ last_accessed: new Date().toISOString() })
+        .eq("name", bookingSystemName);
+    } catch (error) {
+      console.error(
+        `Error patching ${bookingSystemName} data: ${JSON.stringify(error)}`,
       );
     }
   }
