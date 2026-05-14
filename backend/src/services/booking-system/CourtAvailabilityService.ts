@@ -159,19 +159,6 @@ export class CourtAvailabilityService {
       return [];
     }
   }
-
-  public async updateBookingSystemLastAccessed(bookingSystemName: string) {
-    try {
-      await supabase
-        .from("booking_system")
-        .update({ last_accessed: new Date().toISOString() })
-        .eq("name", bookingSystemName);
-    } catch (error) {
-      console.error(
-        `Error patching ${bookingSystemName} data: ${JSON.stringify(error)}`,
-      );
-    }
-  }
 }
 
 export type CourtAvailabilitySlot = {

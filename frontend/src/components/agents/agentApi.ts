@@ -18,7 +18,6 @@ export const agentApi = baseApi.injectEndpoints({
     getAgentStats: build.query<AgentStat, string>({
       query: (agentName) => `/agent/${agentName}`,
       providesTags: ["Agent"],
-      keepUnusedDataFor: 0,
     }),
     getCourtAvailabilityBookingSystems: build.query<
       BookingSystemDTOType[],
@@ -26,7 +25,6 @@ export const agentApi = baseApi.injectEndpoints({
     >({
       query: (agentName) => `/agent/${agentName}/booking-systems`,
       providesTags: ["Agent"],
-      keepUnusedDataFor: 0,
     }),
   }),
 });

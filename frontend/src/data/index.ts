@@ -76,7 +76,7 @@ export const BOOKING_SYSTEMS = [
     logoColor: "teal" as const,
     status: "connected",
     // connectedOn: "Mar 14",
-    lastSync: "2 min ago",
+    lastSync: "-",
     locations: [
       {
         name: "The Willis Recreation and Sports Centre (Willoughby)",

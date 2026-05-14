@@ -28,11 +28,14 @@ export class VoyagerAPIService extends BookingSystemService {
     console.log("getCourtAvailabilities: ", venueName);
     console.log("date: ", date);
     console.log("apiVersion: ", apiVersion);
+
     const availabilityHtml = await this.fetchCourtAvailability(
       venueName,
       date,
       apiVersion,
     );
+
+    this.updateBookingSystemLastAccessed(BookingSystem.VOYAGER);
 
     return this.normalizeCourtAvailability(availabilityHtml);
   }

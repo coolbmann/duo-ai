@@ -10,6 +10,9 @@ export function AgentsPage() {
   const [query, setQuery] = useState("");
   const { data: courtBookingStats } = useGetAgentStatsQuery(
     "court-booking-agent",
+    {
+      refetchOnMountOrArgChange: true,
+    },
   );
 
   const handleOpen = (id: string) => {

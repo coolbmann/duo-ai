@@ -5,6 +5,10 @@ import { useChatSocket } from "@/hooks/useChatSocketHook";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { MessageSquareIcon } from "lucide-react";
+import {
+  useGetAgentStatsQuery,
+  useGetCourtAvailabilityBookingSystemsQuery,
+} from "../agents/agentApi";
 
 type Stage =
   | "idle"
@@ -144,6 +148,10 @@ function StreamingMessage({
 }
 
 export function ChatPage({ chatId }: { chatId: string }) {
+  // Pre-fetch agent stats and booking systems upfront, while Supabase is slow
+  useGetAgentStatsQuery("court-booking-agent");
+  useGetCourtAvailabilityBookingSystemsQuery("court-booking-agent");
+
   const [stage, setStage] = useState<Stage>("idle");
   const [feed, setFeed] = useState<FeedLine[]>([]);
   const [input, setInput] = useState("");

@@ -4,7 +4,10 @@ import { BookingSystemRow } from "./BookingSystemRow";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { MessageSquareIcon, SettingsIcon } from "lucide-react";
 import { requestModalStore } from "@/store/requestModal";
-import { useGetAgentStatsQuery, useGetCourtAvailabilityBookingSystemsQuery } from "@/components/agents/agentApi";
+import {
+  useGetAgentStatsQuery,
+  useGetCourtAvailabilityBookingSystemsQuery,
+} from "@/components/agents/agentApi";
 import { formatDistanceToNow } from "date-fns";
 
 const iconTileColors: Record<string, string> = {
@@ -19,8 +22,15 @@ const iconTileColors: Record<string, string> = {
 export function AgentDetailsPage() {
   const navigate = useNavigate();
   const agent = AGENTS.find((a) => a.id === "court-booking")!;
-  const { data: agentStats } = useGetAgentStatsQuery("court-booking-agent");
-  const { data: bookingSystems } = useGetCourtAvailabilityBookingSystemsQuery("court-booking-agent");
+  const { data: agentStats } = useGetAgentStatsQuery("court-booking-agent", {
+    refetchOnMountOrArgChange: true,
+  });
+  const { data: bookingSystems } = useGetCourtAvailabilityBookingSystemsQuery(
+    "court-booking-agent",
+    {
+      refetchOnMountOrArgChange: true,
+    },
+  );
 
   const formatLastAccessed = (isoString: string) =>
     formatDistanceToNow(new Date(isoString), { addSuffix: true })
@@ -154,7 +164,9 @@ export function AgentDetailsPage() {
                   <BookingSystemRow
                     key={s.id}
                     system={liveLastSync ? { ...s, lastSync: liveLastSync } : s}
-                    comingSoon={s.status === "notConnected" || s.id === "playtomic"}
+                    comingSoon={
+                      s.status === "notConnected" || s.id === "playtomic"
+                    }
                   />
                 );
               })}
