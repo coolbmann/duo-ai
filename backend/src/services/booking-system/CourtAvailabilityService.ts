@@ -4,7 +4,7 @@ import { BookingSystemValue, BookingSystemVenueMap } from "../../utils/enums";
 import { supabase } from "../../lib/supabase";
 
 export class CourtAvailabilityService {
-  private services: Record<BookingSystemValue, BookingSystemService>;
+  private services: Record<BookingSystemValue, BookingSystemService | null>;
 
   constructor() {
     this.services = {
@@ -53,7 +53,7 @@ export class CourtAvailabilityService {
     time: string;
     court: string;
     venue: string;
-  }> {
+  } | null> {
     const selectedCourtAvailabilitySlot = rawCourtAvailabilitySlots.find(
       (slot) => slot.id === selectedCourtTimeslotId,
     );
@@ -85,7 +85,7 @@ export class CourtAvailabilityService {
       const key = `${slot.date}|${slot.venue}|${slot.bookingSystem}`;
       if (!groupMap.has(key)) {
         groupMap.set(key, {
-          id: BookingSystemVenueMap[slot.venue].id,
+          id: Number(BookingSystemVenueMap[slot.venue].id),
           venueName: BookingSystemVenueMap[slot.venue].venueName,
           suburb: BookingSystemVenueMap[slot.venue].suburb,
           lat: BookingSystemVenueMap[slot.venue].lat,
@@ -97,7 +97,11 @@ export class CourtAvailabilityService {
       }
       groupMap
         .get(key)!
-        .slots.push({ id: slot.id, time: slot.time, court: slot.court });
+        .slots.push({
+          id: slot.id ?? null,
+          time: slot.time,
+          court: slot.court,
+        });
     }
 
     return Array.from(groupMap.values());
@@ -166,7 +170,7 @@ export type MinimisedAvailabilityGroup = {
   lat: number;
   lng: number;
   date: string;
-  slots: { id: number; time: string; court: string }[];
+  slots: { id: number | null; time: string; court: string }[];
 };
 
 export interface AvailabilityAPIParams {

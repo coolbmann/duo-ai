@@ -7,7 +7,7 @@ const BookingSystem = {
 export type BookingSystemValue =
   (typeof BookingSystem)[keyof typeof BookingSystem];
 
-const BookingSystemVenueMap = {
+const BookingSystemVenueMap: Record<string, { id: string; venueName: string; bookingSystem: BookingSystemValue; suburb: string; lat: number; lng: number }> = {
   "willis-park-pickleball": {
     id: "willis-park-pickleball",
     venueName: "Voyager Tennis - Willoughby",

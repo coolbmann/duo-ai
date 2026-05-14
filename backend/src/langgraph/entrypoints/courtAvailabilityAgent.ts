@@ -74,7 +74,8 @@ export const courtAvailabilityAgent = entrypoint(
             availabilities.raw,
           );
 
-        const response = `The timeslot for ${bookingDetails.court} at ${bookingDetails.time} is available. \n\nHere is your booking URL: [${BookingSystemVenueMap[bookingDetails.venue]?.venueName} (${bookingDetails.court})](${bookingDetails.bookingUrl})`;
+        // @ts-ignore
+        const response = `The timeslot for ${bookingDetails?.court} at ${bookingDetails?.time} is available. \n\nHere is your booking URL: [${BookingSystemVenueMap[bookingDetails.venue]?.venueName} (${bookingDetails?.court})](${bookingDetails?.bookingUrl})`;
 
         return entrypoint.final({
           value: {
